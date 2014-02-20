@@ -14,13 +14,17 @@ var monLaptop = "1680x1050";
 
 
 // Operations
-var portraitFull = S.op("move", {
-  "screen" : monPortrait,
+var fullScreen = S.op("move", {
   "x" : "screenOriginX",
   "y" : "screenOriginY",
   "width" : "screenSizeX",
   "height" : "screenSizeY"
 });
+
+var mainFull = fullScreen.dup({"screen" : monMain});
+var lappyFull = fullScreen.dup({"screen" : monLaptop});
+var portraitFull = fullScreen.dup({"screen" : monPortrait});
+
 var portraitLeft = portraitFull.dup({ "width" : "screenSizeX/3" });
 var portraitMid = portraitLeft.dup({ "x" : "screenOriginX+screenSizeX/3" });
 var portraitRight = portraitLeft.dup({ "x" : "screenOriginX+(screenSizeX*2/3)" });
@@ -32,8 +36,6 @@ var portraitRightTop = portraitRight.dup({ "height" : "screenSizeY/2" });
 var portraitRightBot = portraitRightTop.dup({ "y" : "screenOriginY+screenSizeY/2" });
 var portraitBottomFull = portraitLeftBot.dup({ "width" : "screenSizeX"});
 
-var mainFull = portraitFull.dup({"screen" : monMain});
-var lappyFull = mainFull.dup({"screen" : monLaptop});
 
 var portraitChat = S.op("move", {
   "screen" : monPortrait,
@@ -102,6 +104,8 @@ S.def(3, threeMonitorLayout);
 
 // Bindings
 S.bindAll({
+  
+  "h:cmd;alt;ctrl" : fullScreen,
   
   "padEnter:cmd;alt;ctrl" : universalLayout,
 
