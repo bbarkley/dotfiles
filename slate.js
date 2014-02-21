@@ -40,7 +40,7 @@ var portraitBottomFull = portraitLeftBot.dup({ "width" : "screenSizeX"});
 var portraitChat = S.op("move", {
   "screen" : monPortrait,
   "x": "screenOriginX+screenSizeX/5",
-  "y": "screenOriginY+50",
+  "y": "screenOriginY",
   "width": "screenSizeX/1.5",
   "height": "screenSizeY/3"
 });
@@ -78,6 +78,11 @@ var threeMonitorLayout = S.layout("threeMonitor", {
     "ignore-fail" : true,
     "title-order-regex" : [".*Scala-ld.*"],
     "repeat-last" : true
+  },
+  "Dash" : {
+    "operations" : [portraitFull.dup({"x" : "screenOriginX+140", "y" : "screenOriginY+250", "width" : "1045", "height" : "675"})],
+    "ignore-fail" : true,
+    "repeat-last" : true
   }
 });
 
@@ -104,8 +109,25 @@ S.def(3, threeMonitorLayout);
 
 // Bindings
 S.bindAll({
+  // push to edges
+  "pad6:cmd;alt;ctrl" : S.op("push", { "direction" : "right", "style" : "bar-resize:screenSizeX/2" }),
+  "pad4:cmd;alt;ctrl" : S.op("push", { "direction" : "left", "style" : "bar-resize:screenSizeX/2" }),
+  "pad8:cmd;alt;ctrl" : S.op("push", { "direction" : "up", "style" : "bar-resize:screenSizeY/2" }),
+  "pad2:cmd;alt;ctrl" : S.op("push", { "direction" : "down", "style" : "bar-resize:screenSizeY/2" }),
   
-  "h:cmd;alt;ctrl" : fullScreen,
+  // Nudge/Move Bindings
+  "right:cmd;alt;ctrl;shift" : S.op("nudge", { "x" : "+5%", "y" : "+0" }),
+  "left:cmd;alt;ctrl;shift" : S.op("nudge", { "x" : "-5%", "y" : "+0" }),
+  "up:cmd;alt;ctrl;shift" : S.op("nudge", { "x" : "+0", "y" : "-5%" }),
+  "down:cmd;alt;ctrl;shift" : S.op("nudge", { "x" : "+0", "y" : "+5%" }),
+  
+  
+  
+  // center
+  "pad5:cmd;alt;ctrl" : S.op("move", {"x" : "screenOriginX+screenSizeX/8", "y" : "screenOriginY+screenSizeY*0.075", "width" : "screenSizeX*0.75", "height" : "screenSizeY*0.85"}),
+  
+  
+  "f:cmd;alt;ctrl" : fullScreen,
   
   "padEnter:cmd;alt;ctrl" : universalLayout,
 
