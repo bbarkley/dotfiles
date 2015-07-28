@@ -6,25 +6,6 @@ function moveTo(func)
 	win:setFrame(func(f, max))
 end
 
-function leftHalf()
-	moveTo(function(f, max)
-		f.x = max.x
-		f.y = max.y
-		f.w = max.w / 2
-		f.h = max.h
-		return f
-	end)
-end
-
-function rightHalf()
-	moveTo(function(f, max)
-		f.x = max.w / 2
-		f.y = max.y
-		f.w = max.w / 2
-		f.h = max.h
-		return f
-	end)
-end
 
 function topHalf()
 	moveTo(function(f, max)
@@ -46,23 +27,32 @@ function bottomHalf()
 	end)
 end
 
-function fullScreen()
-	moveTo(function(f, max)
-		f.x = max.x
-		f.y = max.y
-		f.w = max.w
-		f.h = max.h
-		return f
-	end)
-end
+
+local mainScreen = hs.screen.allScreens()[1]
+local laptopScreen = hs.screen.allScreens()[2]
+local portraitScreen = hs.screen.allScreens()[3]
+
+local threeScreenLayout = {
+    {"LinkedIn Gmail",  nil, portraitScreen, hs.geometry.rect(0, 0.5, 1.0, 0.5), nil, nil},
+	{"Dash",            nil, portraitScreen, hs.geometry.rect(0.15, 0.02, 0.7, 0.35), nil, nil},	
+	{"Adium",           nil, portraitScreen, hs.geometry.rect(0.2, 0.25, 0.6, 0.25), nil, nil},
+	{"Adium",    "Contacts", portraitScreen, hs.geometry.rect(0.0, 0.0, 0.7, 0.35), nil, nil},
+	{"TextMate",        nil, mainScreen, hs.geometry.rect(0.1, 0.1, 0.8, 0.8), nil, nil},
+	{"Safari",          nil, mainScreen, hs.geometry.rect(0.05, 0.05, 0.8, 0.8), nil, nil},
+}
 
 
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "pad4", leftHalf)
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "pad6", rightHalf)
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "pad8", topHalf)
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "pad2", bottomHalf)
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "pad5", fullScreen)
 
+local threeMash = {"cmd", "alt", "ctrl"}
+hs.hotkey.bind(threeMash, "pad4", function() hs.window.focusedWindow():moveToUnit(hs.layout.left50) end)
+hs.hotkey.bind(threeMash, "pad6", function() hs.window.focusedWindow():moveToUnit(hs.layout.right50) end)
+hs.hotkey.bind(threeMash, "pad8", topHalf)
+hs.hotkey.bind(threeMash, "pad2", bottomHalf)
+hs.hotkey.bind(threeMash, "pad5", function() hs.window.focusedWindow():moveToUnit(hs.layout.maximized) end)
+
+hs.hotkey.bind(threeMash, 'g', hs.grid.show)
+
+hs.hotkey.bind(threeMash, 'padenter', function() hs.layout.apply(threeScreenLayout) end)
 
 function reloadConfig(files)
     doReload = false
