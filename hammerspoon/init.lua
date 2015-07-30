@@ -61,7 +61,65 @@ function toFront(_app)
     mainwin:focus()
 end
 
+function scrollUp()
+	hs.eventtap.scrollWheel({0,1}, {}, "pixel")
+end
 
+function scrollDown()
+	hs.eventtap.scrollWheel({0,-1}, {})
+end
+
+function scrollLeft()
+	hs.eventtap.scrollWheel({2,0}, {})
+end
+
+function scrollRight()
+	hs.eventtap.scrollWheel({-2,0}, {})
+end
+
+function mouseHighlight()
+    if mouseCircle then
+        mouseCircle:delete()
+        if mouseCircleTimer then
+            mouseCircleTimer:stop()
+        end
+    end
+    mousepoint = hs.mouse.getAbsolutePosition()
+    mouseCircle = hs.drawing.circle(hs.geometry.rect(mousepoint.x-20, mousepoint.y-20, 40, 40))
+    mouseCircle:setStrokeColor({["red"]=1,["blue"]=0,["green"]=0,["alpha"]=1})
+    mouseCircle:setFill(false)
+    mouseCircle:setStrokeWidth(5)
+    mouseCircle:bringToFront(true)
+    mouseCircle:show()
+
+    mouseCircleTimer = hs.timer.doAfter(1, function() mouseCircle:delete() end)
+end
+
+function mouseUp()
+  local pos = hs.mouse.getAbsolutePosition()
+  hs.mouse.setAbsolutePosition(hs.geometry.point(pos["x"], pos["y"] - 5))
+  mouseHighlight()
+end
+
+function mouseDown()
+  local pos = hs.mouse.getAbsolutePosition()
+  hs.mouse.setAbsolutePosition(hs.geometry.point(pos["x"], pos["y"] + 5))
+  mouseHighlight()
+end
+
+function mouseLeft()
+  local pos = hs.mouse.getAbsolutePosition()
+  hs.mouse.setAbsolutePosition(hs.geometry.point(pos["x"] - 5, pos["y"]))
+  mouseHighlight()
+end
+
+function mouseRight()
+  local pos = hs.mouse.getAbsolutePosition()
+  hs.mouse.setAbsolutePosition(hs.geometry.point(pos["x"] + 5, pos["y"]))
+  mouseHighlight()
+end
+
+-- Screens
 local mainScreen = hs.screen.allScreens()[1]
 local laptopScreen = hs.screen.allScreens()[2]
 local portraitScreen = hs.screen.allScreens()[3]
@@ -69,8 +127,8 @@ local portraitScreen = hs.screen.allScreens()[3]
 local iTunesMiniPlayerLayout = {"iTunes", "MiniPlayer", portraitScreen, hs.geometry.rect(0, 0.922, 0.1, 0.1), nil, nil}
 
 local threeScreenLayout = {
-    {"LinkedIn Gmail",  nil, portraitScreen, hs.geometry.rect(0, 0.5, 1.0, 0.5), nil, nil},
-	{"Dash",            nil, portraitScreen, hs.geometry.rect(0.15, 0.02, 0.7, 0.35), nil, nil},	
+  {"LinkedIn Gmail",  nil, portraitScreen, hs.geometry.rect(0, 0.5, 1.0, 0.5), nil, nil},
+	{"Dash",            nil, portraitScreen, hs.geometry.rect(0.15, 0.02, 0.8, 0.35), nil, nil},	
 	{"Adium",           nil, portraitScreen, hs.geometry.rect(0.2, 0.25, 0.6, 0.25), nil, nil},
 	{"Adium",    "Contacts", portraitScreen, hs.geometry.rect(0.0, 0.0, 0.7, 0.35), nil, nil},
 	{"TextMate",        nil, mainScreen, hs.geometry.rect(0.1, 0.1, 0.8, 0.8), nil, nil},
@@ -81,6 +139,20 @@ local threeScreenLayout = {
 
 
 local threeMash = {"cmd", "alt", "ctrl"}
+local fourMash = {"cmd", "alt", "ctrl", "shift"}
+local triangleMash = {"cmd", "ctrl", "shift"}
+
+-- scrolling
+hs.hotkey.bind(triangleMash, "up", scrollUp, nil, scrollUp)
+hs.hotkey.bind(triangleMash, "down", scrollDown, nil, scrollDown)
+hs.hotkey.bind(triangleMash, "left", scrollLeft, nil, scrollLeft)
+hs.hotkey.bind(triangleMash, "right", scrollRight, nil, scrollRight)
+
+-- mouse movement
+hs.hotkey.bind(fourMash, "up", mouseUp, nil, mouseUp)
+hs.hotkey.bind(fourMash, "down", mouseDown, nil, mouseDown)
+hs.hotkey.bind(fourMash, "left", mouseLeft, nil, mouseLeft)
+hs.hotkey.bind(fourMash, "right", mouseRight, nil, mouseRight)
 
 -- window movement
 hs.hotkey.bind(threeMash, "pad4", function() hs.window.focusedWindow():moveToUnit(hs.layout.left50) end)
