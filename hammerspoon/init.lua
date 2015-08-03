@@ -1,5 +1,9 @@
 hs.window.animationDuration = 0
 
+local screenWatcher = nil
+
+local lastNumberOfScreens = #hs.screen.allScreens()
+
 function moveTo(func)
 	local win = hs.window.focusedWindow()
 	local f = win:frame()
@@ -62,7 +66,7 @@ function toFront(_app)
 end
 
 function scrollUp()
-	hs.eventtap.scrollWheel({0,1}, {}, "pixel")
+	hs.eventtap.scrollWheel({0,1}, {})
 end
 
 function scrollDown()
@@ -127,14 +131,35 @@ local portraitScreen = hs.screen.allScreens()[3]
 local iTunesMiniPlayerLayout = {"iTunes", "MiniPlayer", portraitScreen, hs.geometry.rect(0, 0.922, 0.1, 0.1), nil, nil}
 
 local threeScreenLayout = {
+  {"IntelliJ IDEA",   nil, mainScreen, hs.geometry.rect(0.0, 0.0, 1.0, 1.0), nil, nil},
+	iTunesMiniPlayerLayout,
+}
+
+local threeScreenLayout = {
   {"LinkedIn Gmail",  nil, portraitScreen, hs.geometry.rect(0, 0.5, 1.0, 0.5), nil, nil},
 	{"Dash",            nil, portraitScreen, hs.geometry.rect(0.15, 0.02, 0.8, 0.35), nil, nil},	
 	{"Adium",           nil, portraitScreen, hs.geometry.rect(0.2, 0.25, 0.6, 0.25), nil, nil},
 	{"Adium",    "Contacts", portraitScreen, hs.geometry.rect(0.0, 0.0, 0.7, 0.35), nil, nil},
 	{"TextMate",        nil, mainScreen, hs.geometry.rect(0.1, 0.1, 0.8, 0.8), nil, nil},
 	{"Safari",          nil, mainScreen, hs.geometry.rect(0.05, 0.05, 0.8, 0.8), nil, nil},
+  {"IntelliJ IDEA",   nil, mainScreen, hs.geometry.rect(0.0, 0.0, 1.0, 1.0), nil, nil},
 	iTunesMiniPlayerLayout,
 }
+
+
+-- Callback function for changes in screen layout
+function screensChangedCallback()
+    newNumberOfScreens = #hs.screen.allScreens()
+    if lastNumberOfScreens ~= newNumberOfScreens then
+        if newNumberOfScreens == 1 then
+            hs.layout.apply(singleScreenLayout)
+        elseif newNumberOfScreens == 3 then
+            hs.layout.apply(threeScreenLayout)
+        end
+    end
+
+    lastNumberOfScreens = newNumberOfScreens
+end
 
 
 
@@ -180,6 +205,12 @@ hs.hotkey.bind(threeMash, 'm', function()
 	toggle_application("LinkedIn Gmail", false) 
 	hs.eventtap.keyStroke({'cmd'}, '1')
 end)
+
+
+
+screenWatcher = hs.screen.watcher.new(screensChangedCallback)
+screenWatcher:start()
+
 
 function reloadConfig(files)
     doReload = false
