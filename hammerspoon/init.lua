@@ -33,6 +33,26 @@ function bottomHalf()
 	end)
 end
 
+function bottomLeft()
+	moveTo(function(f, max)
+		f.x = 0
+		f.y = max.h / 2
+		f.w = max.w / 2
+		f.h = max.h / 2
+		return f
+	end)
+end
+
+function bottomRight()
+	moveTo(function(f, max)
+		f.x = max.w / 2
+		f.y = max.h / 2
+		f.w = max.w / 2
+		f.h = max.h / 2
+		return f
+	end)
+end
+
 -- Toggle an application between being the frontmost app, and being hidden
 function toggle_application(_app, mayHide)
 	if mayHide == nil then
@@ -128,15 +148,18 @@ local mainScreen = hs.screen.allScreens()[1]
 local laptopScreen = hs.screen.allScreens()[2]
 local portraitScreen = hs.screen.allScreens()[3]
 
-local iTunesMiniPlayerLayout = {"iTunes", "MiniPlayer", portraitScreen, hs.geometry.rect(0, 0.922, 0.1, 0.1), nil, nil}
+local iTunesMiniPlayerLayout = {"iTunes", "MiniPlayer", portraitScreen, hs.geometry.rect(0, 0.85, 0.15, 0.15), nil, nil}
 
-local threeScreenLayout = {
-  {"IntelliJ IDEA",   nil, mainScreen, hs.geometry.rect(0.0, 0.0, 1.0, 1.0), nil, nil},
+local singleScreenLayout = {
+  {"IntelliJ IDEA",   nil, hs.screen.allScreens()[1], hs.geometry.rect(0.0, 0.0, 1.0, 1.0), nil, nil}, 
 	iTunesMiniPlayerLayout,
 }
 
 local threeScreenLayout = {
-  {"LinkedIn Gmail",  nil, portraitScreen, hs.geometry.rect(0, 0.5, 1.0, 0.5), nil, nil},
+  {"Microsoft Outlook",  nil, portraitScreen, hs.geometry.rect(0, 0.5, 1.0, 0.5), nil, nil},
+  	{"Mail",  nil, portraitScreen, hs.geometry.rect(0, 0.5, 1.0, 0.5), nil, nil},
+  	{"Mail",  "Activity", portraitScreen, hs.geometry.rect(0.0, 0.4, 0.3, 0.05), nil, nil},
+  	{"Slack",  nil, laptopScreen, hs.geometry.rect(0.075, 0.075, 0.85, 0.925), nil, nil},
 	{"Dash",            nil, portraitScreen, hs.geometry.rect(0.15, 0.02, 0.8, 0.35), nil, nil},	
 	{"Adium",           nil, portraitScreen, hs.geometry.rect(0.2, 0.25, 0.6, 0.25), nil, nil},
 	{"Adium",    "Contacts", portraitScreen, hs.geometry.rect(0.0, 0.0, 0.7, 0.35), nil, nil},
@@ -182,8 +205,14 @@ hs.hotkey.bind(fourMash, "right", mouseRight, nil, mouseRight)
 -- window movement
 hs.hotkey.bind(threeMash, "pad4", function() hs.window.focusedWindow():moveToUnit(hs.layout.left50) end)
 hs.hotkey.bind(threeMash, "pad6", function() hs.window.focusedWindow():moveToUnit(hs.layout.right50) end)
+hs.hotkey.bind(threeMash, "up", topHalf)
 hs.hotkey.bind(threeMash, "pad8", topHalf)
+hs.hotkey.bind(threeMash, "down", bottomHalf)
 hs.hotkey.bind(threeMash, "pad2", bottomHalf)
+hs.hotkey.bind(threeMash, "left", bottomLeft)
+hs.hotkey.bind(threeMash, "pad1", bottomLeft)
+hs.hotkey.bind(threeMash, "right", bottomRight)
+hs.hotkey.bind(threeMash, "pad3", bottomRight)
 hs.hotkey.bind(threeMash, "pad5", function() hs.window.focusedWindow():moveToUnit(hs.layout.maximized) end)
 
 -- grid
@@ -196,15 +225,16 @@ hs.hotkey.bind(threeMash, 'padenter', function() hs.layout.apply(threeScreenLayo
 -- app show/hide
 hs.hotkey.bind(threeMash, 'j', function() toggle_application("IntelliJ IDEA") end)
 hs.hotkey.bind(threeMash, 't', function() toggle_application("iTerm") end)
-hs.hotkey.bind(threeMash, 'c', function() 
-	toggle_application("LinkedIn Gmail", false) 
-	hs.eventtap.keyStroke({'cmd'}, '2')
-end)
+hs.hotkey.bind(threeMash, 'c', function() toggle_application("Calendar") end)
+-- hs.hotkey.bind(threeMash, 'c', function() 
+-- 	toggle_application("LinkedIn Gmail", false) 
+-- 	hs.eventtap.keyStroke({'cmd'}, '2')
+-- end)
 
-hs.hotkey.bind(threeMash, 'm', function() 
-	toggle_application("LinkedIn Gmail", false) 
-	hs.eventtap.keyStroke({'cmd'}, '1')
-end)
+-- hs.hotkey.bind(threeMash, 'm', function() 
+-- 	toggle_application("LinkedIn Gmail", false) 
+-- 	hs.eventtap.keyStroke({'cmd'}, '1')
+-- end)
 
 
 
