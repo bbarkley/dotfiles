@@ -226,6 +226,7 @@ hs.hotkey.bind(threeMash, 'padenter', function() hs.layout.apply(threeScreenLayo
 hs.hotkey.bind(threeMash, 'j', function() toggle_application("IntelliJ IDEA") end)
 hs.hotkey.bind(threeMash, 't', function() toggle_application("iTerm") end)
 hs.hotkey.bind(threeMash, 'c', function() toggle_application("Calendar") end)
+hs.hotkey.bind(threeMash, 's', function() toggle_application("Slack") end)
 -- hs.hotkey.bind(threeMash, 'c', function() 
 -- 	toggle_application("LinkedIn Gmail", false) 
 -- 	hs.eventtap.keyStroke({'cmd'}, '2')
